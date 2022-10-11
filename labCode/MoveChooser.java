@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 public class MoveChooser {
 
@@ -18,8 +16,9 @@ public class MoveChooser {
             for (int i = 0; i < moves.size(); i++) {
                 BoardState tmpBoard = boardState.deepCopy();
                 tmpBoard.makeLegalMove(moves.get(i).x, moves.get(i).y);
-                int tmpScore = minMax(tmpBoard, searchDepth - 1, -1000, 1000);
+                int tmpScore = minMax(tmpBoard, searchDepth - 1, -1000, 1000, 1);
                 if (tmpScore > bestScore) {
+                    bestScore = tmpScore;
                     bestMove = i;
                 }
             }
@@ -54,8 +53,7 @@ public class MoveChooser {
         return score;
     }
 
-    public static int minMax(BoardState tmpBoard, int deepth, int alpha, int beta) {
-        System.out.println("Deepth: " + deepth + " alpha: " + alpha + " beta: " + beta);
+    public static int minMax(BoardState tmpBoard, int deepth, int alpha, int beta, int colour) {
         if (deepth == 0 || tmpBoard.gameOver()) {
             return getWeight(tmpBoard, tmpBoard.colour);
         }
@@ -63,23 +61,41 @@ public class MoveChooser {
         if (moves.isEmpty()) {
             return getWeight(tmpBoard, tmpBoard.colour);
         }
+        int max = -1000;
+        int min = 1000;
         for (Move move : moves) {
             BoardState childBoard = tmpBoard.deepCopy();
             childBoard.makeLegalMove(move.x, move.y);
-            int tmpScore = minMax(childBoard, deepth - 1, alpha, beta);
-            if (tmpBoard.colour == 1) {
-                alpha = max(alpha, tmpScore);
+            int tmpScore = minMax(childBoard, deepth - 1, alpha, beta, -colour);
+            if (tmpBoard.colour == colour) {
+                if (tmpScore > alpha) {
+                    if (tmpScore > beta) {
+                        return tmpScore;
+                    }
+                    alpha = tmpScore;
+                }
+                if (tmpScore > max) {
+                    max = tmpScore;
+                }
             } else {
-                beta = min(beta, tmpScore);
+                if (tmpScore < beta) {
+                    if (tmpScore < alpha) {
+                        return tmpScore;
+                    }
+                    beta = tmpScore;
+                }
+                if (tmpScore < min) {
+                    min = tmpScore;
+                }
             }
             if (alpha >= beta) {
                 break;
             }
         }
-        if (tmpBoard.colour == 1) {
-            return alpha;
+        if (tmpBoard.colour == colour) {
+            return max;
         } else {
-            return beta;
+            return min;
         }
     }
 }
