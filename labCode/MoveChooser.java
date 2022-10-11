@@ -16,14 +16,13 @@ public class MoveChooser {
             for (int i = 0; i < moves.size(); i++) {
                 BoardState tmpBoard = boardState.deepCopy();
                 tmpBoard.makeLegalMove(moves.get(i).x, moves.get(i).y);
-                int tmpScore = minMax(tmpBoard, searchDepth - 1, -1000, 1000, 1);
+                int tmpScore = alphabeta(tmpBoard, searchDepth - 1, -1000, 1000);
                 if (tmpScore > bestScore) {
                     bestScore = tmpScore;
                     bestMove = i;
                 }
             }
         }
-        System.out.println("Choose " + bestMove + " in " + moves.size());
         return moves.get(bestMove);
     }
 
@@ -53,7 +52,7 @@ public class MoveChooser {
         return score;
     }
 
-    public static int minMax(BoardState tmpBoard, int deepth, int alpha, int beta, int colour) {
+    public static int alphabeta(BoardState tmpBoard, int deepth, int alpha, int beta) {
         if (deepth == 0 || tmpBoard.gameOver()) {
             return getWeight(tmpBoard, tmpBoard.colour);
         }
@@ -66,8 +65,8 @@ public class MoveChooser {
         for (Move move : moves) {
             BoardState childBoard = tmpBoard.deepCopy();
             childBoard.makeLegalMove(move.x, move.y);
-            int tmpScore = minMax(childBoard, deepth - 1, alpha, beta, -colour);
-            if (tmpBoard.colour == colour) {
+            int tmpScore = alphabeta(childBoard, deepth - 1, alpha, beta);
+            if (tmpBoard.colour == 1) {
                 if (tmpScore > alpha) {
                     if (tmpScore > beta) {
                         return tmpScore;
@@ -92,7 +91,7 @@ public class MoveChooser {
                 break;
             }
         }
-        if (tmpBoard.colour == colour) {
+        if (tmpBoard.colour == 1) {
             return max;
         } else {
             return min;
