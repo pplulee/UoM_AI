@@ -16,7 +16,7 @@ public class MoveChooser {
             for (int i = 0; i < moves.size(); i++) {
                 BoardState tmpBoard = boardState.deepCopy();
                 tmpBoard.makeLegalMove(moves.get(i).x, moves.get(i).y);
-                int tmpScore = alphabeta(tmpBoard, searchDepth - 1, -1000, 1000);
+                int tmpScore = alphabeta(tmpBoard, searchDepth, -1000, 1000);
                 if (tmpScore > bestScore) {
                     bestScore = tmpScore;
                     bestMove = i;
@@ -53,11 +53,8 @@ public class MoveChooser {
     }
 
     public static int alphabeta(BoardState tmpBoard, int deepth, int alpha, int beta) {
-        if (deepth == 0 || tmpBoard.gameOver()) {
-            return getWeight(tmpBoard, tmpBoard.colour);
-        }
         ArrayList<Move> moves = tmpBoard.getLegalMoves();
-        if (moves.isEmpty()) {
+        if (deepth == 0 || tmpBoard.gameOver() || moves.isEmpty()) {
             return getWeight(tmpBoard, tmpBoard.colour);
         }
         int max = -1000;
@@ -70,12 +67,11 @@ public class MoveChooser {
                 if (tmpScore > alpha) {
                     if (tmpScore > beta) {
                         return tmpScore;
+                    } else {
+                        alpha = tmpScore;
                     }
-                    alpha = tmpScore;
                 }
-                if (tmpScore > max) {
-                    max = tmpScore;
-                }
+                max = Math.max(tmpScore, max);
             } else {
                 if (tmpScore < beta) {
                     if (tmpScore < alpha) {
@@ -83,18 +79,12 @@ public class MoveChooser {
                     }
                     beta = tmpScore;
                 }
-                if (tmpScore < min) {
-                    min = tmpScore;
-                }
+                min = Math.min(tmpScore, min);
             }
             if (alpha >= beta) {
                 break;
             }
         }
-        if (tmpBoard.colour == 1) {
-            return max;
-        } else {
-            return min;
-        }
+        return tmpBoard.colour == 1 ? max : min;
     }
 }
