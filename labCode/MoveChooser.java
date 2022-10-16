@@ -16,7 +16,7 @@ public class MoveChooser {
             for (int i = 0; i < moves.size(); i++) {
                 BoardState tmpBoard = boardState.deepCopy();
                 tmpBoard.makeLegalMove(moves.get(i).x, moves.get(i).y);
-                int tmpScore = alphabeta(tmpBoard, searchDepth, -1000, 1000);
+                int tmpScore = alphabeta(tmpBoard, searchDepth-1, -1000, 1000);
                 if (tmpScore > bestScore) {
                     bestScore = tmpScore;
                     bestMove = i;
@@ -40,12 +40,10 @@ public class MoveChooser {
         int score = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (tmpBoard.getContents(i, j) != 0) {
-                    if (tmpBoard.getContents(i, j) == Color) {
-                        score += WeightTable[i][j];
-                    } else if (tmpBoard.getContents(i, j) == -Color) {
-                        score -= WeightTable[i][j];
-                    }
+                if (tmpBoard.getContents(i, j) == Color) {
+                    score += WeightTable[i][j];
+                } else if (tmpBoard.getContents(i, j) == -Color) {
+                    score -= WeightTable[i][j];
                 }
             }
         }
@@ -76,8 +74,10 @@ public class MoveChooser {
                 if (tmpScore < beta) {
                     if (tmpScore < alpha) {
                         return tmpScore;
+                    } else {
+                        beta = tmpScore;
                     }
-                    beta = tmpScore;
+
                 }
                 min = Math.min(tmpScore, min);
             }
