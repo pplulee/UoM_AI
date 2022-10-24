@@ -53,11 +53,11 @@ def Travellers(List):
 
 # Task 2
 def CommonSum(n):
-    return 0
+    return int(n * (n ** 2 + 1) / 2)
 
 
 # Task 3
-def msqList(m, pairList):
+def msqList(n, pairList):
     return []
 
 
@@ -69,4 +69,3 @@ def pmsList(m, pairList):
 # Debug
 if __name__ == '__main__':
     print("debug run...")
-    print(Travellers([["olga", "5:30"]]))
