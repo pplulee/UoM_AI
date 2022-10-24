@@ -16,13 +16,9 @@ def msqList(n, pairList):
     problem.addConstraint(ExactSumConstraint(CommonSum(n)), [i * n + i for i in range(n)])  # diagonal
     problem.addConstraint(ExactSumConstraint(CommonSum(n)), [i * n + (n - i - 1) for i in range(n)])  # diagonal
     for pair in pairList:
-        print(pair)
-        problem.addConstraint(lambda x: x == pair[1], [pair[0]])
-    # problem.addConstraint(lambda x: x == pairList[0][1], [pairList[0][0]])
-    # problem.addConstraint(lambda x: x == pairList[1][1], [pairList[1][0]])
-    # problem.addConstraint(lambda x: x == pairList[2][1], [pairList[2][0]])
+        problem.addConstraint(ExactSumConstraint(pair[1]),[pair[0]])
     return problem.getSolutions()
 
 
-result = msqList(4, [[0, 13], [1, 12], [2, 7]])
-print(len(result))
+
+print(msqList(4, [[0, 13], [1, 12], [2, 7]]))
