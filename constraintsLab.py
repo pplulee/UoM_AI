@@ -33,6 +33,8 @@ def Travellers(List):
     # 4 | The person flying from Yemen is leaving earlier than the person flying from Taiwan.
     for person in people:
         for person2 in people:
+            if person == person2:
+                continue
             problem.addConstraint(lambda x, y, t1, t2: (x != "yemen") or (y != "taiwan") or (int(t1[0]) < int(t2[0])),
                                   ["d_" + person, "d_" + person2, "t_" + person, "t_" + person2])
 
@@ -60,16 +62,17 @@ def CommonSum(n):
 def msqList(n, pairList):
     from constraint import Problem, AllDifferentConstraint, ExactSumConstraint
     problem = Problem()
+    sum = CommonSum(n)
     problem.addVariables(range(0, n * n), range(1, n * n + 1))
     problem.addConstraint(AllDifferentConstraint(), range(0, n * n))
     for row in range(n):
-        problem.addConstraint(ExactSumConstraint(CommonSum(n)),
+        problem.addConstraint(ExactSumConstraint(sum),
                               [row * n + i for i in range(n)])
     for col in range(n):
-        problem.addConstraint(ExactSumConstraint(CommonSum(n)),
+        problem.addConstraint(ExactSumConstraint(sum),
                               [col + n * i for i in range(n)])
-    problem.addConstraint(ExactSumConstraint(CommonSum(n)), [i * n + i for i in range(n)])  # diagonal
-    problem.addConstraint(ExactSumConstraint(CommonSum(n)), [i * n + (n - i - 1) for i in range(n)])  # diagonal
+    problem.addConstraint(ExactSumConstraint(sum), [i * n + i for i in range(n)])  # diagonal
+    problem.addConstraint(ExactSumConstraint(sum), [i * n + (n - i - 1) for i in range(n)])  # diagonal
     for pair in pairList:
         problem.addConstraint(ExactSumConstraint(pair[1]), [pair[0]])
     return problem.getSolutions()
@@ -77,7 +80,35 @@ def msqList(n, pairList):
 
 # Task 4
 def pmsList(n, pairList):
-    return []
+    from constraint import Problem, AllDifferentConstraint, ExactSumConstraint
+    problem = Problem()
+    sum = CommonSum(n)
+    problem.addVariables(range(0, n * n), range(1, n * n + 1))
+    problem.addConstraint(AllDifferentConstraint(), range(0, n * n))
+    for row in range(n):
+        problem.addConstraint(ExactSumConstraint(sum),
+                              [row * n + i for i in range(n)])
+    for col in range(n):
+        problem.addConstraint(ExactSumConstraint(sum),
+                              [col + n * i for i in range(n)])
+    problem.addConstraint(ExactSumConstraint(sum), [i * n + i for i in range(n)])  # diagonal
+    problem.addConstraint(ExactSumConstraint(sum), [i * n + (n - i - 1) for i in range(n)])  # diagonal
+    for pair in pairList:
+        problem.addConstraint(ExactSumConstraint(pair[1]), [pair[0]])
+    bd = []
+    for x in range(1, n):
+        tmp = [i * n + i + x for i in range(n)]
+        for y in range(n - x, n):
+            tmp[y] -= n
+        bd.append(tmp)
+    for x in range(1, n):
+        tmp = [i * n + (n - i - 1) - x for i in range(n)]
+        for y in range(n - x, n):
+            tmp[y] += n
+        bd.append(tmp)
+    for list in bd:
+        problem.addConstraint(ExactSumConstraint(sum), list)
+    return problem.getSolutions()
 
 
 # Debug
