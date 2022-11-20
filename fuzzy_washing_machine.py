@@ -34,18 +34,7 @@ rule_weights_dict = {1: 10, 2: 40, 3: 60, 4: 100}
 # TASK 1: 2 marks
 # Implement the function that computes the degree to which a crisp input belongs to a fuzzy set
 def fuzzify(fuzzy_set: FuzzySet, val: float) -> float:
-    result = 0
-    if fuzzy_set == dirty_set:
-        result = dirty_set.eval(value=val)
-    elif fuzzy_set == almost_clean_set:
-        result = almost_clean_set.eval(value=val)
-    elif fuzzy_set == very_delicate_set:
-        result = very_delicate_set.eval(value=val)
-    elif fuzzy_set == delicate_set:
-        result = delicate_set.eval(value=val)
-    elif fuzzy_set == not_delicate_set:
-        result = not_delicate_set.eval(value=val)
-    return float(result)
+    return float(fuzzy_set.eval(value=val))
 
 
 # TASK 2a: 2 marks
