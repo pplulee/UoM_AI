@@ -53,10 +53,15 @@ def get_disjunction(fuzzified_dirt: float, fuzzified_fabric_weight: float) -> fl
 # Implement the function for computing the combined value of a rule antecedent
 def get_rule_antecedent_value(ant1: FuzzySet, val1: float, ant2: FuzzySet, val2: float, operator: str) -> float:
     result = 0.0
-    if operator == "AND":
-        result = get_conjunction(fuzzify(ant1, val1), fuzzify(ant2, val2))
-    elif operator == "OR":
-        result = get_disjunction(fuzzify(ant1, val1), fuzzify(ant2, val2))
+    if ant1 is None and ant2 is not None:
+        return fuzzify(ant2, val2)
+    elif ant1 is not None and ant2 is None:
+        return fuzzify(ant1, val1)
+    elif ant1 is not None and ant2 is not None:
+        if operator == "AND":
+            result = get_conjunction(fuzzify(ant1, val1), fuzzify(ant2, val2))
+        elif operator == "OR":
+            result = get_disjunction(fuzzify(ant1, val1), fuzzify(ant2, val2))
     return float(result)
 
 
@@ -71,7 +76,7 @@ def get_rule_output_value(rule_number: int, rule_antecedent_value: float) -> flo
 # fabric_weight range from 1.0 to 11.00 inclusive
 def configure_washing_machine(dirt_amount: float, fabric_weight: float) -> tuple:
     # this should be set to a List containing the antecedent values for all rules
-    all_antecedents = [fuzzify(very_delicate_set, fabric_weight),
+    all_antecedents = [get_rule_antecedent_value(very_delicate_set, fabric_weight, None, None, "''"),
                        get_rule_antecedent_value(delicate_set, fabric_weight, almost_clean_set, dirt_amount, "OR"),
                        get_rule_antecedent_value(delicate_set, fabric_weight, dirty_set, dirt_amount, "AND"),
                        get_rule_antecedent_value(not_delicate_set, fabric_weight, dirty_set, dirt_amount, "AND")]
