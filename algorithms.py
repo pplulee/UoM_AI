@@ -11,9 +11,7 @@ def dist_thresholding(des1, des2, threshold_value) -> list:
     for m in matches:
         tmp = []
         for n in m:
-            if threshold_value == -1:
-                tmp.append(n)
-            elif n.distance < threshold_value:
+            if n.distance < threshold_value:
                 tmp.append(n)
         result.append(tmp)
     return result
