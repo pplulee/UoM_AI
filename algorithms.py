@@ -36,10 +36,10 @@ def nndr(des1, des2, threshold_value) -> list:
     bf = cv2.BFMatcher()
     matches = bf.knnMatch(des1, des2, k=2)
     result = []
-    for i in range(len(matches)):
+    for m in matches:
         tmp = []
-        if matches[i][0].distance < threshold_value * matches[i][1].distance:
-            tmp.append(matches[i][0])
+        if m[0].distance < threshold_value * m[1].distance:
+            tmp.append(m[0])
         result.append(tmp)
     return result
 
