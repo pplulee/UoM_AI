@@ -6,7 +6,7 @@ import cv2
 
 def dist_thresholding(des1, des2, threshold_value) -> list:
     bf = cv2.BFMatcher()
-    matches = bf.knnMatch(des1, des2, k=len(des1))
+    matches = bf.knnMatch(des1, des2, k=max(len(des1), len(des2)))
     result = []
     for m in matches:
         tmp = []
